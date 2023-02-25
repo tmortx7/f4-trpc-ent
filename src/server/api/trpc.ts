@@ -30,7 +30,7 @@ type CreateContextOptions = Record<string, never>;
  *
  * @see https://create.t3.gg/en/usage/trpc#-servertrpccontextts
  */
-const createInnerTRPCContext = (_opts: CreateContextOptions) => {
+export const createInnerTRPCContext = (opts?: CreateContextOptions) => {
   return {
     prisma,
   };
@@ -51,7 +51,7 @@ export const createTRPCContext = (_opts: CreateNextContextOptions) => {
  *
  * This is where the tRPC API is initialized, connecting the context and transformer.
  */
-import { initTRPC } from "@trpc/server";
+import { inferAsyncReturnType, initTRPC } from "@trpc/server";
 import superjson from "superjson";
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
@@ -83,3 +83,4 @@ export const createTRPCRouter = t.router;
  * are logged in.
  */
 export const publicProcedure = t.procedure;
+export type Context = inferAsyncReturnType<typeof createTRPCContext>;

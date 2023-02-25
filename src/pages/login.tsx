@@ -7,11 +7,11 @@ import { api } from "~/utils/api";
 
 const LoginPage = () => {
   const router = useRouter();
-  // const mutation = api.auth.registerUser.useMutation({
-  //   onSuccess() {
-  //     void router.push("/login");
-  //   },
-  // });
+  const mutation = api.auth.loginUser.useMutation({
+    onSuccess() {
+      void router.push("/");
+    },
+  });
   return (
     <div className="align-center mt-[100px] flex w-full flex-col">
       <h1 className="mb-6 text-4xl">Login</h1>
@@ -24,7 +24,7 @@ const LoginPage = () => {
         }}
         validationSchema={toFormikValidationSchema(LoginSchema)}
         onSubmit={(values: ILogin) => {
-            // mutation.mutate(values);
+            mutation.mutate(values);
         }}
       >
         {({ errors }) => (
@@ -63,11 +63,11 @@ const LoginPage = () => {
                 </span>
               </label>
             </div>
-            {/* {mutation.isError ? (
+            {mutation.isError ? (
               <div className="text-red-400">
                 An error occurred: {mutation.error.message}
               </div>
-            ) : null} */}
+            ) : null}
 
             <button
               className="btn-bordered btn btn-info mt-4 w-full max-w-xs"
