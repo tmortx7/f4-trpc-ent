@@ -9,7 +9,7 @@ const LoginPage = () => {
   const router = useRouter();
   const mutation = api.auth.loginUser.useMutation({
     onSuccess() {
-      void router.push("/");
+      void router.push("/dashboard");
     },
   });
   return (
@@ -23,8 +23,9 @@ const LoginPage = () => {
           password: "",
         }}
         validationSchema={toFormikValidationSchema(LoginSchema)}
-        onSubmit={(values: ILogin) => {
+        onSubmit={(values,actions) => {
             mutation.mutate(values);
+            actions.resetForm()
         }}
       >
         {({ errors }) => (

@@ -14,6 +14,7 @@ const server = z.object({
   REFRESH_TOKEN_PUBLIC_KEY: z.string(),
   REDIS_HOSTNAME: z.string(),
   REDIS_PORT: z.string(),
+  JWT_SECRET_KEY: z.string(),
 });
 
 /**
@@ -40,6 +41,7 @@ const processEnv = {
   REFRESH_TOKEN_PUBLIC_KEY: process.env.REFRESH_TOKEN_PUBLIC_KEY,
   REDIS_HOSTNAME: process.env.REDIS_HOSTNAME,
   REDIS_PORT: process.env.REDIS_PORT,
+  JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
 
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 };

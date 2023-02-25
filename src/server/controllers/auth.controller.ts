@@ -1,9 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { type ILogin, type IRegister } from "~/schema/user.schema";
 import { hash, verify } from "argon2";
 import { TRPCError } from "@trpc/server";
 import { createUser, findUniqueUser } from "../services/user.service";
 import { type Context } from "../api/trpc";
+import { SignJWT } from "jose";
+import { nanoid } from "nanoid";
+import { getJwtSecretkey } from "~/lib/auth";
+import cookie from "cookie";
 
 export const registerHandler = async ({ input }: { input: IRegister }) => {
   try {
@@ -33,12 +39,13 @@ export const registerHandler = async ({ input }: { input: IRegister }) => {
 
 export const loginHandler = async ({
   input,
-  ctx: {},
+  ctx,
 }: {
   input: ILogin;
   ctx: Context;
 }) => {
   try {
+    const { res } = ctx;
     // Get the user from the collection
     const user = await findUniqueUser({ email: input.email });
 
@@ -49,6 +56,23 @@ export const loginHandler = async ({
         message: "Invalid email or password",
       });
     }
+
+    // return a jwt cookie to the user
+    const token = await new SignJWT({})
+      .setProtectedHeader({ alg: "HS256" })
+      .setJti(nanoid())
+      .setIssuedAt()
+      .setExpirationTime("1m")
+      .sign(new TextEncoder().encode(getJwtSecretkey()));
+
+    res.setHeader(
+      "Set-Cookie",
+      cookie.serialize("user-token", token, {
+        httpOnly: true,
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      })
+    );
 
     return {
       status: "success",
