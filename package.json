@@ -16,6 +16,7 @@
     "@trpc/next": "^10.9.0",
     "@trpc/react-query": "^10.9.0",
     "@trpc/server": "^10.9.0",
+    "argon2": "^0.30.3",
     "daisyui": "^2.51.0",
     "formik": "^2.2.9",
     "ioredis": "^5.3.1",
