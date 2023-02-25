@@ -11,8 +11,11 @@ createdb:
 dropdb:
 	docker exec -it postgres14 dropdb dbdata
 
+redis:
+	docker run --name my-first-redis -p 6379:6379  -d redis
 
 
 
 
-.PHONY: postgres createdb dropdb  pgadmin
+
+.PHONY: postgres createdb dropdb  pgadmin redis
