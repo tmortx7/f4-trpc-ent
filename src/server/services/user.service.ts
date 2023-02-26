@@ -1,10 +1,10 @@
-import { type User, type Prisma } from '@prisma/client';
-import { prisma } from '../db';
+import { type User, type Prisma } from "@prisma/client";
+import { prisma } from "../db";
 
 export const createUser = async (input: Prisma.UserCreateInput) => {
-  return (await prisma.user.create({
+  return await prisma.user.create({
     data: input,
-  }));
+  });
 };
 
 export const findUser = async (
@@ -26,3 +26,5 @@ export const findUniqueUser = async (
     select,
   })) as User;
 };
+
+

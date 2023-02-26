@@ -6,6 +6,7 @@ import { jwtVerify, SignJWT } from "jose";
 interface UserJwtPayload {
   jti: string;
   iat: number;
+  sub: string;
 }
 export const getJwtSecretkey = () => {
   const secret = process.env.JWT_SECRET_KEY;

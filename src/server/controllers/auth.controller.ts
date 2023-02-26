@@ -4,12 +4,18 @@
 import { type ILogin, type IRegister } from "~/schema/user.schema";
 import { hash, verify } from "argon2";
 import { TRPCError } from "@trpc/server";
-import { createUser, findUniqueUser } from "../services/user.service";
+import {
+  createUser,
+  findUniqueUser,
+  signTokens,
+} from "../services/user.service";
+import customConfig from "../config/default";
 import { type Context } from "../api/trpc";
 import { SignJWT } from "jose";
 import { nanoid } from "nanoid";
 import { getJwtSecretkey } from "~/lib/auth";
 import cookie from "cookie";
+import redisClient from "~/utils/connectRedis";
 
 export const registerHandler = async ({ input }: { input: IRegister }) => {
   try {
@@ -56,15 +62,19 @@ export const loginHandler = async ({
         message: "Invalid email or password",
       });
     }
+    const userId = user.id ?? "";
+    void redisClient.set(userId, JSON.stringify(user));
+    void redisClient.expire(userId, customConfig.redisCacheExpiresIn);
 
-    // return a jwt cookie to the user
     const token = await new SignJWT({})
       .setProtectedHeader({ alg: "HS256" })
       .setJti(nanoid())
       .setIssuedAt()
-      .setExpirationTime("1m")
+      .setExpirationTime(customConfig.accessTokenExpiresIn)
+      .setSubject(user.id)
       .sign(new TextEncoder().encode(getJwtSecretkey()));
 
+    // Send Access Token in Cookie
     res.setHeader(
       "Set-Cookie",
       cookie.serialize("user-token", token, {

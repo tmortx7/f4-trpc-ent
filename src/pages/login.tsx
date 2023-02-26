@@ -25,10 +25,10 @@ const LoginPage = () => {
         validationSchema={toFormikValidationSchema(LoginSchema)}
         onSubmit={(values,actions) => {
             mutation.mutate(values);
-            actions.resetForm()
+            actions.setSubmitting(false);
         }}
       >
-        {({ errors }) => (
+        {({ errors, isSubmitting }) => (
           <Form>
             <div className="form-control">
               <label className="label" htmlFor="name">
@@ -73,6 +73,7 @@ const LoginPage = () => {
             <button
               className="btn-bordered btn btn-info mt-4 w-full max-w-xs"
               type="submit"
+              disabled={isSubmitting}
             >
               Continue
             </button>
